@@ -1,0 +1,25 @@
+.Dd May 29, 2025
+.Dt far 1
+.Os
+.Sh NAME
+.Nm far
+.Nd resolve Finder aliases
+.Sh SYNOPSIS
+.Nm far
+.Ar
+.Sh DESCRIPTION
+For each operand
+.Ar file ,
+if 
+.Ar file
+names a Finder alias, then the
+.Nm
+utility will resolve it, and display the resulting path. Otherwise,
+.Nm
+will display
+.Ar file
+unchanged.
+.Sh EXIT STATUS
+The
+.Nm
+utility exits 0 on success, and >0 if an error occurs.

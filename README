@@ -1,0 +1,20 @@
+far
+===
+
+A command line utility for macOS which resolves Finder aliases.
+
+Usage
+-----
+
+To use far, invoke it at the command line with one more more file paths:
+
+    far file...
+
+For each operand file, if file names a Finder alias, then far will resolve it,
+and display the resulting path. Otherwise, far will display file unchanged.
+
+Installation
+------------
+
+To install far, run make and make install. To uninstall far, run make uninstall.
+

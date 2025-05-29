@@ -1,44 +1,37 @@
 #include <CoreFoundation/CoreFoundation.h>
 
-#define PROGRAM_NAME "far"
-#define USAGE "usage: " PROGRAM_NAME " file...\n"
+#define PROGNAME "far"
+#define USAGE "usage: " PROGNAME " file...\n"
 
-int main(int argc, char *argv[])
-{
-    CFURLRef source, target;
-    CFDataRef bookmark;
-    CFErrorRef error;
-    char path[PATH_MAX];
+int main(int argc,  char *argv[]) {
+    int ret;
+    CFURLRef srcurl, trgurl;
+    CFDataRef bookmarkdata;
+    char trgpath[PATH_MAX];
 
     if (argc <= 1) {
         fprintf(stderr, USAGE);
         return 1;
     }
-
+    ret = 0;
     for (--argc, ++argv; argc > 0; --argc, ++argv) {
-        source = CFURLCreateFromFileSystemRepresentation(NULL, (UInt8 *)*argv, strlen(*argv), false);
-        bookmark = CFURLCreateBookmarkDataFromFile(NULL, source, &error);
-        if (!bookmark) {
-            fprintf(stderr, PROGRAM_NAME ": %s: is not a Finder alias\n", *argv);
-            CFRelease(error);
-            CFRelease(source);
-            return 2;
+        srcurl = CFURLCreateFromFileSystemRepresentation(NULL, (UInt8 *)*argv, strlen(*argv), false);
+        bookmarkdata = CFURLCreateBookmarkDataFromFile(NULL, srcurl, NULL);
+        if (bookmarkdata) {
+            trgurl = CFURLCreateByResolvingBookmarkData(NULL, bookmarkdata, 0, NULL, NULL, NULL, NULL);
+            if (trgurl) {
+                CFURLGetFileSystemRepresentation(trgurl, false, (UInt8 *)trgpath, PATH_MAX);
+                printf("%s\n", trgpath);
+                CFRelease(trgurl);
+            } else {
+                ret = 1;
+                fprintf(stderr, PROGNAME ": %s: Could not resolve Finder alias\n", *argv);
+            }
+            CFRelease(bookmarkdata);
+        } else {
+            printf("%s\n", *argv);
         }
-        target = CFURLCreateByResolvingBookmarkData(NULL, bookmark, 0, NULL, NULL, NULL, &error);
-        if (!target) {
-            fprintf(stderr, PROGRAM_NAME ": %s: could not resolve alias\n", *argv);
-            CFRelease(error);
-            CFRelease(source);
-            CFRelease(bookmark);
-            return 3;
-        }
-        CFURLGetFileSystemRepresentation(target, false, (UInt8 *)path, PATH_MAX);
-        printf("%s\n", path);
-        CFRelease(source);
-        CFRelease(bookmark);
-        CFRelease(target);
-        error = NULL;
+        CFRelease(srcurl);
     }
-
-    return 0;
+    return ret;
 }
