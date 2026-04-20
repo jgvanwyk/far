@@ -1,8 +1,10 @@
-MAN1_DIR=/usr/local/share/man/man1
-BIN_DIR=/usr/local/bin
+PREFIX ?= /usr/local
 
-far: far.c
-	clang -framework CoreFoundation -o far far.c
+MAN1_DIR = $(PREFIX)/share/man/man1
+BIN_DIR = $(PREFIX)/bin
+
+far: far.m
+	clang -framework Foundation -o far far.m
 
 .PHONY: install
 install: far far.1
