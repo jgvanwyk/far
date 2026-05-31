@@ -1,4 +1,4 @@
-.Dd May 29, 2025
+.Dd May 31, 2026
 .Dt far 1
 .Os
 .Sh NAME
@@ -6,20 +6,21 @@
 .Nd resolve Finder aliases
 .Sh SYNOPSIS
 .Nm far
-.Ar
+.Ar file
 .Sh DESCRIPTION
-For each operand
-.Ar file ,
-if 
+If
 .Ar file
-names a Finder alias, then the
+names a Finder alias, then
 .Nm
-utility will resolve it, and display the resulting path. Otherwise,
-.Nm
-will display
-.Ar file
-unchanged.
+resolves it, and displays the resulting path.
 .Sh EXIT STATUS
-The
 .Nm
-utility exits 0 on success, and >0 if an error occurs.
+exits 0 if it successfuly resolves
+.Ar file ,
+and >0 if an error occurs.
+.Sh BUGS
+Ideally, the exit status would distinguish between failing because
+.Ar file
+does not name a Finder alias, and failing because of another error.
+However, this is impossible because the Core Foundation function
+CFURLCreateBookmarkDataFromFile() does not make this distinction.
